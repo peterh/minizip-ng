@@ -466,6 +466,11 @@ else()
     list(APPEND STDLIB_DEF -D_POSIX_C_SOURCE=200809L -D_BSD_SOURCE -D_DEFAULT_SOURCE)
     list(APPEND MINIZIP_SRC mz_os_posix.c mz_strm_os_posix.c)
 
+    if(APPLE)
+        # Despite being part of POSIX 2008, macOS thinks that O_NOFOLLOW is still a non-standard extension
+        list(APPEND STDLIB_DEF -D_DARWIN_C_SOURCE)
+    endif()
+
     if(MZ_PKCRYPT OR MZ_WZAES)
         if(MZ_OPENSSL)
             list(APPEND MINIZIP_DEP_PKG OpenSSL)
