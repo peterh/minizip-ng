@@ -699,8 +699,11 @@ int32_t mz_zip_reader_entry_save_file(void *handle, const char *path) {
     /* Check if file exists and ask if we want to overwrite */
     if (reader->overwrite_cb && mz_os_file_exists(pathwfs) == MZ_OK) {
         err_cb = reader->overwrite_cb(reader, reader->overwrite_userdata, reader->file_info, pathwfs);
-        if (err_cb != MZ_OK)
+        if (err_cb != MZ_OK) {
+            if (err_cb == MZ_EXIST_ERROR)
+                err_cb = MZ_OK;
             goto save_cleanup;
+        }
         /* We want to overwrite the file so we delete the existing one */
         mz_os_unlink(pathwfs);
     }
